@@ -1,0 +1,401 @@
+{
+	"info": {
+		"_postman_id": "2f77f016-013b-4989-a81c-5075a97bcebd",
+		"name": "vc.com",
+		"description": "Тестовый стент api запросов к vc.com\n\nКаждый запрос содержит тест на код ответа (для тестов должен быть 200) и дополнительные тесты по телу ответа\n\nNOTE:\n\n1\\. Сперва необходимо получить токен\n\nuri из запроса geting token надо самостоятельно скопировать в адресную строку - токен начинается с \"access_token= \" и заканчивается \"&expires_in=\"\n\n2\\. Чтобы запрос friends mutual сработал вам необходимо в collection variables указать current value для target_uid -\n\nэто id пользователя vc.com с которым вы хотите проверить своих общих друзей.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22593967"
+	},
+	"item": [
+		{
+			"name": "geting token",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://oauth.vk.com/authorize?client_id=51582188&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=photos, friends, wall&response_type=token&v=5.131",
+					"protocol": "https",
+					"host": [
+						"oauth",
+						"vk",
+						"com"
+					],
+					"path": [
+						"authorize"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "51582188"
+						},
+						{
+							"key": "display",
+							"value": "page"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.vk.com/blank.html"
+						},
+						{
+							"key": "scope",
+							"value": "photos, friends, wall"
+						},
+						{
+							"key": "response_type",
+							"value": "token"
+						},
+						{
+							"key": "v",
+							"value": "5.131"
+						}
+					]
+				},
+				"description": "Получаем токен - делаем авторизацию\n\nuri надо самостоятельно скопировать в адресную строку - токен начинается с \"access_token= \" и заканчивается \"&expires_in=\""
+			},
+			"response": []
+		},
+		{
+			"name": "users get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"verify first_name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.response[0].first_name).to.eql(\"Персик\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"verify b_date\", function () {\r",
+							"    pm.expect(pm.response.json().response[0].bdate).to.equal(\"21.12.2000\")\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.vk.com/method/users.get?access_token={{token}}&v={{v}}&user_ids=743784474&fields=bdate&lang=1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"vk",
+						"com"
+					],
+					"path": [
+						"method",
+						"users.get"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "v",
+							"value": "{{v}}"
+						},
+						{
+							"key": "user_ids",
+							"value": "743784474"
+						},
+						{
+							"key": "fields",
+							"value": "bdate"
+						},
+						{
+							"key": "lang",
+							"value": "1"
+						}
+					]
+				},
+				"description": "Получаем аккаунт с id743784474\n\nПроверяем совпадение его имени и даты рождения"
+			},
+			"response": []
+		},
+		{
+			"name": "account active offers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"count\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.vk.com/method/account.getActiveOffers?access_token={{token}}&v={{v}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"vk",
+						"com"
+					],
+					"path": [
+						"method",
+						"account.getActiveOffers"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "v",
+							"value": "{{v}}"
+						}
+					]
+				},
+				"description": "Получаем список активных рекламных предложений\n\nПроверям содержится ли строка count в теле результата"
+			},
+			"response": []
+		},
+		{
+			"name": "friends mutual",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include('{\"response\":[');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.vk.com/method/friends.getMutual?access_token={{token}}&v={{v}}&target_uid={{target_uid}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"vk",
+						"com"
+					],
+					"path": [
+						"method",
+						"friends.getMutual"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "v",
+							"value": "{{v}}"
+						},
+						{
+							"key": "target_uid",
+							"value": "{{target_uid}}"
+						}
+					]
+				},
+				"description": "Получаем список общих друзей между авторизованном пользователем и пользователем с target_id"
+			},
+			"response": []
+		},
+		{
+			"name": "photos copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"response\");\r",
+							"});\r",
+							"\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.collectionVariables.set(\"item_id\", jsonData.response);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api.vk.com/method/photos.copy?access_token={{token}}&v={{v}}&owner_id=743784474&photo_id=457239018",
+					"protocol": "https",
+					"host": [
+						"api",
+						"vk",
+						"com"
+					],
+					"path": [
+						"method",
+						"photos.copy"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "v",
+							"value": "{{v}}"
+						},
+						{
+							"key": "owner_id",
+							"value": "743784474"
+						},
+						{
+							"key": "photo_id",
+							"value": "457239018"
+						}
+					]
+				},
+				"description": "Сохраняем фото photo_id пользователя owner_id в \"сохраненные фотографии\"\n\nПроверяем успешность запроса - успешностью является наличие поля \"response\" со значением id сохраненной фотографии\n\nСохраняем id получившегося фото в photo_id"
+			},
+			"response": []
+		},
+		{
+			"name": "like add",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include('{\"response\":{\"likes\":');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api.vk.com/method/likes.add?access_token={{token}}&v={{v}}&item_id={{item_id}}&type=photo",
+					"protocol": "https",
+					"host": [
+						"api",
+						"vk",
+						"com"
+					],
+					"path": [
+						"method",
+						"likes.add"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "v",
+							"value": "{{v}}"
+						},
+						{
+							"key": "item_id",
+							"value": "{{item_id}}"
+						},
+						{
+							"key": "type",
+							"value": "photo"
+						}
+					]
+				},
+				"description": "Ставим лайк на сохроненное фото photo_id в реквесте \"photos copy\"\n\nПроверяем ответ"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "v",
+			"value": "5.131",
+			"type": "string"
+		},
+		{
+			"key": "item_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "target_uid",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
