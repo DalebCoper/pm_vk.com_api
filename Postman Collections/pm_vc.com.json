@@ -1,0 +1,428 @@
+{
+	"info": {
+		"_postman_id": "ab5f461e-b585-48b8-ab24-215850d7f358",
+		"name": "vc.com",
+		"description": "Тестовый стент api запросов к vc.com\n\nКаждый запрос содержит тест на код ответа (для тестов должен быть 200) и дополнительные тесты по телу ответа",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "geting token",
+			"_postman_id": "50c78514-6443-4c57-98f5-fc69ada01a6b",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://oauth.vk.com/authorize?client_id=51582188&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=photos, friends, wall&response_type=token&v=5.131",
+					"protocol": "https",
+					"host": [
+						"oauth",
+						"vk",
+						"com"
+					],
+					"path": [
+						"authorize"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "51582188"
+						},
+						{
+							"key": "display",
+							"value": "page"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://oauth.vk.com/blank.html"
+						},
+						{
+							"key": "scope",
+							"value": "photos, friends, wall"
+						},
+						{
+							"key": "response_type",
+							"value": "token"
+						},
+						{
+							"key": "v",
+							"value": "5.131"
+						}
+					]
+				},
+				"description": "Получаем токен - метод send не сработает  \n\nuri надо самостоятельно скопировать в адресную строку - токен начинается с \"access_token= \" и заканчивается \"&expires_in=\""
+			},
+			"response": []
+		},
+		{
+			"name": "users get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b8c932ba-aca2-4f61-a6ad-f946ec8039cd",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"verify first_name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.response[0].first_name).to.eql(\"Персик\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"verify b_date\", function () {\r",
+							"    pm.expect(pm.response.json().response[0].bdate).to.equal(\"21.12.2000\")\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"_postman_id": "3899b7dd-2c56-44de-a2dd-9c5a5395d739",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.vk.com/method/users.get?access_token={{token}}&v={{v}}&user_ids=743784474&fields=bdate&lang=1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"vk",
+						"com"
+					],
+					"path": [
+						"method",
+						"users.get"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "v",
+							"value": "{{v}}"
+						},
+						{
+							"key": "user_ids",
+							"value": "743784474"
+						},
+						{
+							"key": "fields",
+							"value": "bdate"
+						},
+						{
+							"key": "lang",
+							"value": "1"
+						}
+					]
+				},
+				"description": "Получаем аккаунт с id743784474\n\nПроверяем совпадение его имени и даты рождения"
+			},
+			"response": []
+		},
+		{
+			"name": "account active offers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "99ba1bc8-e462-4409-bfbc-8305abf32fca",
+						"exec": [
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"count\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"_postman_id": "c2c06f3f-5c80-461a-a729-18adb4d05da7",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.vk.com/method/account.getActiveOffers?access_token={{token}}&v={{v}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"vk",
+						"com"
+					],
+					"path": [
+						"method",
+						"account.getActiveOffers"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "v",
+							"value": "{{v}}"
+						}
+					]
+				},
+				"description": "Получаем список активных рекламных предложений\n\nПроверям содержится ли строка count в теле результата"
+			},
+			"response": []
+		},
+		{
+			"name": "friends mutual",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2a2e965c-de4c-40be-93a2-a159d2a8caf8",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"_postman_id": "1f81fc3d-f6ce-49a1-81f3-2d417c3f8f00",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.vk.com/method/friends.getMutual?access_token={{token}}&v={{v}}&target_id={{target_id}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"vk",
+						"com"
+					],
+					"path": [
+						"method",
+						"friends.getMutual"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "v",
+							"value": "{{v}}"
+						},
+						{
+							"key": "target_id",
+							"value": "{{target_id}}"
+						}
+					]
+				},
+				"description": "Получаем список общих друзей между авторизованном пользователем и пользователем с target_id"
+			},
+			"response": []
+		},
+		{
+			"name": "photos copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5ff485b-f05a-4d19-b3ca-90e5ad4b4f4d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"response\");\r",
+							"});\r",
+							"\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.collectionVariables.set(\"item_id\", jsonData.response);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"_postman_id": "4b3d6ed7-b0fb-4e92-bdbb-32649b038025",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api.vk.com/method/photos.copy?access_token={{token}}&v={{v}}&owner_id=743784474&photo_id=457239018",
+					"protocol": "https",
+					"host": [
+						"api",
+						"vk",
+						"com"
+					],
+					"path": [
+						"method",
+						"photos.copy"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "v",
+							"value": "{{v}}"
+						},
+						{
+							"key": "owner_id",
+							"value": "743784474"
+						},
+						{
+							"key": "photo_id",
+							"value": "457239018"
+						}
+					]
+				},
+				"description": "Сохраняем фото photo_id пользователя owner_id в \"сохраненные фотографии\"\n\nПроверяем успешность запроса - успешностью является наличие поля \"response\" со значением id сохраненной фотографии\n\nСохраняем id получившегося фото в photo_id"
+			},
+			"response": []
+		},
+		{
+			"name": "like add",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "716ba064-224a-46c6-b5f0-74dcfb99f295",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include('{\"response\":{\"likes\":');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"_postman_id": "4f516dd2-61c6-43a4-a7a6-87713b8234bf",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api.vk.com/method/likes.add?access_token={{token}}&v={{v}}&item_id={{item_id}}&type=photo",
+					"protocol": "https",
+					"host": [
+						"api",
+						"vk",
+						"com"
+					],
+					"path": [
+						"method",
+						"likes.add"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "v",
+							"value": "{{v}}"
+						},
+						{
+							"key": "item_id",
+							"value": "{{item_id}}"
+						},
+						{
+							"key": "type",
+							"value": "photo"
+						}
+					]
+				},
+				"description": "Ставим лайк на сохроненное фото photo_id в реквесте \"photos copy\"\n\nПроверяем ответ"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "35eafbbb-50c6-408e-ae33-8d4948ed7dc0",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "6f772c92-8ee9-48ab-8771-c1e4261c71e7",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "fce6ab85-13a2-40b2-ae64-72f0e97cd889",
+			"key": "v",
+			"value": "5.131",
+			"type": "string"
+		},
+		{
+			"id": "555ea417-82f6-446b-a727-a30231d62945",
+			"key": "target_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "30f09186-5aaa-4386-9da8-6596f25afbd9",
+			"key": "item_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "8cfd8c3f-02c7-4d9c-ac33-c9b70708fd7c",
+			"value": "",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
