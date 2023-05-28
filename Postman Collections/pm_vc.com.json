@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "ab5f461e-b585-48b8-ab24-215850d7f358",
 		"name": "vk.com",
-		"description": "Тестовый стент api запросов к vc.com\n\nКаждый запрос содержит тест на код ответа (для тестов должен быть 200) и дополнительные тесты по телу ответа",
+		"description": "Тестовый стент api запросов к vk.com\n\nКаждый запрос содержит тест на код ответа (для тестов должен быть 200) и дополнительные тесты по телу ответа",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
@@ -401,25 +401,25 @@
 	],
 	"variable": [
 		{
-			"id": "ab295fda-d441-4d60-b25c-234fd28f4c4d",
+			"id": "bdedc0ab-0a02-4c15-994b-3a7c3c5651f8",
 			"key": "v",
 			"value": "5.131",
 			"type": "string"
 		},
 		{
-			"id": "bb6d849f-b2ab-420a-930d-017a5feb0d0d",
+			"id": "523db027-0ec1-4895-b313-762758ba5acd",
 			"key": "target_id",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "c9360b3f-a2ee-49c1-af8b-4c8b1e49f7e1",
+			"id": "6ad41427-a31d-45c5-b980-012737fb1976",
 			"key": "item_id",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "7625b108-4f81-4729-a85a-7852b8ced029",
+			"id": "8bb409b7-7e80-49f8-bf0a-f509c56583e6",
 			"value": "",
 			"type": "string",
 			"disabled": true
